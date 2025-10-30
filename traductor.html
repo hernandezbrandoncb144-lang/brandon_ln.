@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traducción - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #88b04b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .install-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .install-section h3 {
+            color: white;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.8rem;
+        }
+
+        .install-code {
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .output-section {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .output-section h3 {
+            color: #2d5016;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1rem;
+        }
+
+        .output-block {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #2d2d2d;
+            white-space: pre-line;
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #6b5b95;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index(LN).html.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">🌐</div>
+            <h1>Traducción con Google Translate</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 Traducción Automática con googletrans</h2>
+            <p>
+                La biblioteca googletrans es una implementación no oficial de la API de Google Translate para Python. Permite traducir texto entre múltiples idiomas de forma automática utilizando el potente motor de traducción de Google. Esta herramienta es ideal para proyectos de procesamiento de lenguaje natural que requieren traducción multilingüe.
+            </p>
+            <p>
+                Con googletrans puedes detectar idiomas automáticamente, traducir textos completos y acceder a información adicional sobre las traducciones.
+            </p>
+        </div>
+
+        <div class="install-section">
+            <h3>📦 Instalación</h3>
+            <div class="install-code">pip install googletrans==4.0.0-rc1</div>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código de Ejemplo</h2>
+            <div class="code-block">
+# Traductor en tres idiomas: inglés, francés y alemán
+from googletrans import Translator
+
+# Crear el traductor
+traductor = Translator()
+
+# Pedir al usuario el texto
+texto = input("Escribe el texto que quieres traducir: ")
+
+# Traducir a inglés, francés y alemán
+ingles = traductor.translate(texto, dest='en')
+frances = traductor.translate(texto, dest='fr')
+aleman = traductor.translate(texto, dest='de')
+
+# Mostrar los resultados
+print("\n--- Traducciones ---")
+print(f"Inglés: {ingles.text}")
+print(f"Francés: {frances.text}")
+print(f"Alemán: {aleman.text}")
+
+    </div>
+
+       
+
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones y Conceptos</h2>
+
+            <div class="glossary-item">
+                <h3>Translator()</h3>
+                <div class="syntax">traductor = Translator()</div>
+                <p>
+                    Clase principal de googletrans que crea una instancia del traductor. Este objeto se utiliza para realizar todas las operaciones de traducción y detección de idioma. Actúa como interfaz entre tu código y los servicios de Google Translate.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.translate()</h3>
+                <div class="syntax">traductor.translate(texto, src='es', dest='en')</div>
+                <p>
+                    Método principal para traducir texto. Recibe el texto a traducir y opcionalmente los parámetros 'src' (idioma origen) y 'dest' (idioma destino). Si no se especifica 'src', detecta el idioma automáticamente. Devuelve un objeto con múltiples atributos de la traducción.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.detect()</h3>
+                <div class="syntax">traductor.detect(texto)</div>
+                <p>
+                    Método que detecta automáticamente el idioma del texto proporcionado. Devuelve un objeto con dos atributos: 'lang' (código del idioma detectado) y 'confidence' (nivel de confianza de 0 a 1). Es útil cuando no conoces el idioma del texto de entrada.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Atributos del resultado</h3>
+                <div class="syntax">resultado.text, resultado.origin, resultado.src, resultado.dest</div>
+                <p>
+                    El objeto devuelto por translate() contiene varios atributos útiles: 'text' (texto traducido), 'origin' (texto original), 'src' (código del idioma origen detectado), 'dest' (código del idioma destino). Estos permiten acceder a toda la información de la traducción.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Códigos de idioma</h3>
+                <div class="syntax">'es', 'en', 'fr', 'de', 'ja', etc.</div>
+                <p>
+                    Códigos ISO 639-1 de dos letras que identifican los idiomas. Ejemplos: 'es' (español), 'en' (inglés), 'fr' (francés), 'de' (alemán), 'ja' (japonés), 'pt' (portugués), 'it' (italiano), 'zh-cn' (chino simplificado). Se usan en los parámetros src y dest.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Traducción múltiple</h3>
+                <div class="syntax">for idioma in idiomas: traductor.translate(...)</div>
+                <p>
+                    Técnica para traducir un mismo texto a varios idiomas iterando sobre una lista de códigos de idioma. Útil para crear versiones multilingües de contenido o comparar traducciones. Cada iteración genera una nueva traducción independiente.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Manejo de errores</h3>
+                <div class="syntax">try: ... except Exception as e: ...</div>
+                <p>
+                    Es recomendable usar try-except al trabajar con googletrans, ya que requiere conexión a internet y puede fallar por límites de uso, problemas de red o cambios en la API. Siempre incluye manejo de excepciones en aplicaciones de producción.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

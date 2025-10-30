@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preprocesamiento - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #88b04b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+            color: white;
+        }
+
+        .definition-box h3 {
+            margin-bottom: 0.8rem;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+        }
+
+        .definition-box p {
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.7;
+        }
+
+        .install-section {
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .install-section h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.8rem;
+        }
+
+        .install-code {
+            background: rgba(255, 255, 255, 0.8);
+            color: #2d2d2d;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .comparison-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .comparison-section h3 {
+            color: #6b5b95;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .comparison-card {
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-card.before {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
+
+        .comparison-card.after {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+        }
+
+        .comparison-card h4 {
+            color: #2d2d2d;
+            margin-bottom: 1rem;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+        }
+
+        .comparison-card .text-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            line-height: 1.5;
+            color: #2d2d2d;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #6b5b95;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">🧹</div>
+            <h1>Preprocesamiento de Texto</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 ¿Qué es el Preprocesamiento?</h2>
+            <p>
+                El preprocesamiento de texto es una etapa crucial en el procesamiento de lenguaje natural (PLN) que transforma datos textuales crudos en un formato estructurado, limpio y adecuado para que los algoritmos de aprendizaje automático puedan analizarlos de manera eficiente.
+            </p>
+            <p>
+                Este proceso ayuda a reducir el ruido, estandarizar el texto y conservar el significado esencial del lenguaje, eliminando elementos que no aportan valor al análisis como signos de puntuación, mayúsculas inconsistentes y espacios innecesarios.
+            </p>
+            <div class="definition-box">
+                <h3>✨ Importancia del Preprocesamiento</h3>
+                <p>
+                    Un texto bien preprocesado mejora significativamente el rendimiento de los modelos de NLP, reduce el tiempo de procesamiento, y permite que los algoritmos se enfoquen en las características realmente importantes del texto. Es el primer y más importante paso en cualquier proyecto de análisis de texto.
+                </p>
+            </div>
+        </div>
+
+        <div class="install-section">
+            <h3>📦 Instalación de NLTK y Regex</h3>
+            <div class="install-code">pip install nltk</div>
+            <div class="install-code">import nltk</div>
+            <div class="install-code">nltk.download('punkt_tab')</div>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código Completo</h2>
+            <div class="code-block">
+                <pre>
+import re
+
+import nltk
+#descarga de modelo de tokenizacion
+#nltk.download('punkt_tab')
+#importamos las funciones de la libreria
+from nltk.tokenize import word_tokenize,sent_tokenize
+
+#ejemplo de texto tokenizar
+texto=("En la materia de lenguaje natural LN y vision artificial VL, se desarrolla"
+       "un portafolio de practicas como material de apoyo para las siguientes"
+       " semestres de la especialidad, icluyendo practicas y glosarios de funciones "
+       "por cada práctica.")
+
+#como buena practica antes de tokenizar, hay que limpiar el texto
+#convertir en minuscula
+texto_limpio=texto.lower()
+
+#quitar saltos de linea y espacios
+texto_limpio=texto_limpio.strip()
+
+#elimina caracteres que no sean letras
+texto_limpio = re.sub(r'[^a-záéíóúüñ\s]', '', texto_limpio)
+
+
+#TOKENIZAR
+#tokens por palabras
+palabras=word_tokenize(texto_limpio,language='spanish')
+print("token en palabras:",palabras)
+
+#token por oraciones
+oraciones=sent_tokenize(texto)
+print("token en oraciones:",oraciones)
+
+
+print("texto original:",texto)
+print(texto_limpio)
+
+("El procesamiento de un texto de lenguaje natural (PLN) es"
+ " una etapa esencial que transforma datos textuales crudos en un formato "
+ "estrcuturado, limpio y adecuado para que los algoritmos de aprendizaje"
+ " automatico puedan analizarlos y procesar los de manera eficiente."
+ "Este proceso ayuda a reducir ruido, estandarizado el texto y conservar"
+ " el significado esencial del lenguaje ")
+                </pre>
+            </div>
+        </div>
+
+        <div class="comparison-section">
+            <h3>🔄 Antes y Después del Preprocesamiento</h3>
+            <div class="comparison-grid">
+                <div class="comparison-card before">
+                    <h4>❌ Texto Original (Sucio)</h4>
+                    <div class="text-box">
+En la materia de lenguaje natural LN y vision artificial VL, se desarrolla un portafolio de practicas como material de apoyo para las siguientes semestres de la especialidad, icluyendo practicas y glosarios de funciones por cada práctica.
+                    </div>
+                </div>
+                <div class="comparison-card after">
+                    <h4>✅ Texto Limpio (Procesado)</h4>
+                    <div class="text-box">
+en la materia de lenguaje natural ln y vision artificial vl se desarrolla un portafolio de practicas como material de apoyo para las siguientes semestres de la especialidad icluyendo practicas y glosarios de funciones por cada práctica
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones y Conceptos</h2>
+
+            <div class="glossary-item">
+                <h3>NLTK (Natural Language Toolkit)</h3>
+                <div class="syntax">import nltk</div>
+                <p>
+                    Biblioteca líder en Python para procesamiento de lenguaje natural. Proporciona herramientas para tokenización, etiquetado gramatical, análisis sintáctico, clasificación de texto y más. Es esencial para proyectos de NLP y cuenta con recursos lingüísticos para múltiples idiomas.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>re (Regular Expressions)</h3>
+                <div class="syntax">import re</div>
+                <p>
+                    Módulo de Python para trabajar con expresiones regulares. Permite buscar, extraer y reemplazar patrones de texto complejos. Es fundamental para la limpieza y validación de datos textuales en el preprocesamiento.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.lower()</h3>
+                <div class="syntax">texto.lower()</div>
+                <p>
+                    Método que convierte todos los caracteres de una cadena a minúsculas. Esto normaliza el texto para que palabras como "Python", "PYTHON" y "python" se traten de manera idéntica en el análisis, evitando duplicados innecesarios.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.strip()</h3>
+                <div class="syntax">texto.strip()</div>
+                <p>
+                    Método que elimina espacios en blanco, saltos de línea y tabulaciones al inicio y al final de una cadena. No afecta los espacios entre palabras. Es útil para limpiar texto que proviene de archivos o entrada de usuario.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>re.sub()</h3>
+                <div class="syntax">re.sub(patron, reemplazo, texto)</div>
+                <p>
+                    Función que busca un patrón en el texto y lo reemplaza por otro. En este caso, usamos el patrón '[^a-záéíóúüñ\s]' que significa "todo lo que NO sea letra (incluidas las acentuadas y ñ) o espacio", y lo reemplazamos por nada (eliminándolo).
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Expresión Regular [^...]</h3>
+                <div class="syntax">[^a-záéíóúüñ\s]</div>
+                <p>
+                    El símbolo ^ dentro de corchetes significa "negación". Esta expresión indica "cualquier carácter que NO sea: letra minúscula (a-z), letra acentuada (áéíóúü), ñ, o espacio (\s)". Así eliminamos números, signos de puntuación y caracteres especiales.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>word_tokenize()</h3>
+                <div class="syntax">word_tokenize(texto, language='spanish')</div>
+                <p>
+                    Función de NLTK que divide un texto en palabras individuales (tokens). Es más sofisticada que split() porque maneja correctamente puntuación, contracciones y casos especiales. El parámetro language permite usar reglas específicas del idioma español.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>sent_tokenize()</h3>
+                <div class="syntax">sent_tokenize(texto, language='spanish')</div>
+                <p>
+                    Función que divide un texto en oraciones individuales. Identifica inteligentemente los límites de oraciones considerando puntos, signos de interrogación y exclamación, pero distinguiendo de abreviaturas. Útil para análisis a nivel de oración.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>nltk.download()</h3>
+                <div class="syntax">nltk.download('punkt_tab')</div>
+                <p>
+                    Función para descargar recursos adicionales de NLTK. 'punkt_tab' es el modelo de tokenización que contiene reglas para dividir texto en palabras y oraciones. Solo necesita ejecutarse una vez para instalar los recursos necesarios.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Pasos del Preprocesamiento</h3>
+                <div class="syntax">1. Minúsculas → 2. Strip → 3. Regex → 4. Tokenización</div>
+                <p>
+                    Secuencia estándar de limpieza: primero normalizar mayúsculas, luego eliminar espacios innecesarios, después remover caracteres no deseados con expresiones regulares, y finalmente tokenizar. Este orden es importante para obtener mejores resultados en el procesamiento.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

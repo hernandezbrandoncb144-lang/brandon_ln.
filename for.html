@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bucles For</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #27ae60;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .btn-volver {
+            display: inline-block;
+            background: linear-gradient(135deg, #52c234 0%, #27ae60 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-volver:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-section h2 {
+            color: #27ae60;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            font-size: 2rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            border-radius: 15px;
+            padding: 25px;
+            overflow-x: auto;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .code-block pre {
+            margin: 0;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 1.5vw, 1rem);
+            line-height: 1.6;
+        }
+
+        .code-block code {
+            display: block;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+
+        .glosario {
+            display: grid;
+            gap: 20px;
+        }
+
+        .funcion-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 5px solid #27ae60;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .funcion-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.2);
+        }
+
+        .funcion-card h3 {
+            color: #27ae60;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .funcion-card p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .parametros {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .parametros strong {
+            color: #27ae60;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .parametros ul {
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .parametros li {
+            margin-bottom: 5px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .header, .content-section {
+                padding: 25px;
+            }
+
+            .code-block {
+                padding: 15px;
+            }
+
+            .funcion-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header, .content-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Bucles For</h1>
+            <p>Itera sobre secuencias y ejecuta bloques de código de manera eficiente</p>
+            <a href="index.html" class="btn-volver">← Volver al inicio</a>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="icon">💻</span>Código del Ejemplo</h2>
+            
+            <div class="code-block">
+                <pre>
+from tokens import texto_Limpio
+
+numeros=[1,2,3,4,5]
+
+for num in numeros:
+    print(num)
+########################
+frutas=["manzana","banana","cereza"]
+
+for fruta in frutas:
+    print("Núymero:",1)
+
+##############################
+palabra="python"
+
+for letra in palabra:
+    print(letra)
+#########################
+texto_limpio="hola mundo esto es python"
+tokens=texto_limpio.split()
+
+for token in tokens:
+    print("token;",tokens)</pre>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="icon">📚</span>Glosario de Conceptos</h2>
+            <div class="glosario">
+                
+                <div class="funcion-card">
+                    <h3>Bucle for</h3>
+                    <span class="tag">Python</span>
+                    <p>Estructura de control que permite iterar sobre elementos de una secuencia (lista, tupla, cadena, etc.) ejecutando un bloque de código para cada elemento de forma automática.</p>
+
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Iteración sobre listas</h3>
+                    <span class="tag">Python</span>
+                    <p>Permite recorrer cada elemento de una lista de forma secuencial. El bucle for asigna cada elemento a la variable de iteración, facilitando el acceso y procesamiento de los datos.</p>
+
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Iteración sobre strings</h3>
+                    <span class="tag">Python</span>
+                    <p>Las cadenas de texto son iterables en Python, lo que permite recorrer cada carácter individualmente usando un bucle for. Útil para análisis de texto, validaciones y procesamiento carácter por carácter.</p>
+
+                </div>
+
+                <div class="funcion-card">
+                    <h3>split()</h3>
+                    <span class="tag">Python</span>
+                    <p>Método de cadenas que divide un string en una lista de subcadenas basándose en un separador (por defecto, espacios en blanco). Muy útil para tokenizar texto y procesar palabras individuales.</p>
+               
+                </div>
+
+                <div class="funcion-card">
+                    <h3>print()</h3>
+                    <span class="tag">Python</span>
+                    <p>Función integrada que muestra valores en la consola. Acepta múltiples argumentos separados por comas y los imprime separados por espacios. Fundamental para depuración y visualización de resultados.</p>
+                
+    </div>
+</body>
+</html>

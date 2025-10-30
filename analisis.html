@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Sentimientos - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #88b04b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .install-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .install-section h3 {
+            color: white;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.8rem;
+        }
+
+        .install-code {
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .code-block .number {
+            color: #ae81ff;
+        }
+
+        .output-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .output-section h3 {
+            color: #6b5b95;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1rem;
+        }
+
+        .sentiment-result {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sentiment-card {
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .sentiment-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .sentiment-card.positive {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+        }
+
+        .sentiment-card.negative {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
+
+        .sentiment-card.neutral {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .sentiment-card h4 {
+            color: #2d2d2d;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .sentiment-card .text {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 0.8rem;
+        }
+
+        .sentiment-card .score {
+            font-weight: bold;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: #2d2d2d;
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            color: #6b5b95;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+
+            .sentiment-result {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">😊</div>
+            <h1>Análisis de Sentimientos</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 ¿Qué es el Análisis de Sentimientos?</h2>
+            <p>
+                El análisis de sentimientos (Sentiment Analysis) es una técnica de procesamiento de lenguaje natural que determina la actitud emocional expresada en un texto. Clasifica las opiniones como positivas, negativas o neutrales, y puede medir la intensidad de dichas emociones.
+            </p>
+            <p>
+                Esta técnica es fundamental para analizar reseñas de productos, comentarios en redes sociales, feedback de clientes, y cualquier texto donde se expresen opiniones o emociones. Utiliza modelos de aprendizaje automático entrenados con millones de ejemplos.
+            </p>
+        </div>
+
+        <div class="install-section">
+            <h3>📦 Instalación de TextBlob</h3>
+            <div class="install-code">pip install textblob</div>
+            <div class="install-code">python -m textblob.download_corpora</div>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código de Ejemplo</h2>
+            <div class="code-block">
+<pre>
+    '''
+crear una frase larga con palabras repetidas donde exprese un sentimiento positivo
+y sentimientos negativos, analizar la frase completa, eliminando signos de puntuacion
+, tokenizando la frase, y recoriendo la frase con if contabilizar cuantas
+palabras positivas y cuants negativas se encontraron, y de ahi determinar
+si la frase es positiva o negativa
+'''
+
+#creando listas con palabras para detectar el sentir de la frase
+palabraspositivas=['feliz','contento','maravillosa','bonito','bonita','color']
+palabrasnegativas=['triste','solo','aburrido','malo','deprimido','horrible','muerto','demonios']
+
+frase="solo, triste feliz bonito color"
+
+texto_limpio=frase.replace(",","").replace(".","").lower()
+palabras = texto_limpio.lower().split()
+verificadas=[]
+positivos=0
+negativos=0
+
+for palabra in palabras:
+    if palabra  in palabraspositivas:
+        positivos += 1
+    if palabra in palabrasnegativas:
+        negativos +=1
+
+print("palabras positivos;",positivos)
+print("palabras negativas:",negativos)
+
+for palabra in palabras: #python esta dentro de tokens
+    if palabra not in verificadas:
+        print(palabra,"tiene",len(palabra),"letras")
+        verificadas.append(palabra)
+
+if positivos > negativos:
+    print("Tu frase es positiva")
+
+elif negativos > positivos:
+    print("Tu frase es negativa")
+
+
+
+</pre></div>
+        </div>
+
+        <div class="output-section">
+            <h3>📤 Resultados del Análisis</h3>
+            <div class="sentiment-result">
+                <div class="sentiment-card positive">
+                    <h4>😊 Positivo</h4>
+                    <p class="text">"I love Python! It's amazing and powerful"</p>
+                    <p class="score">Polaridad: 0.62</p>
+                    <p class="score">Subjetividad: 0.90</p>
+                </div>
+                <div class="sentiment-card negative">
+                    <h4>😞 Negativo</h4>
+                    <p class="text">"This movie was terrible and boring"</p>
+                    <p class="score">Polaridad: -0.70</p>
+                    <p class="score">Subjetividad: 1.00</p>
+                </div>
+                <div class="sentiment-card neutral">
+                    <h4>😐 Neutral</h4>
+                    <p class="text">"The weather is okay today"</p>
+                    <p class="score">Polaridad: 0.05</p>
+                    <p class="score">Subjetividad: 0.25</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones y Conceptos</h2>
+
+            <div class="glossary-item">
+                <h3>TextBlob</h3>
+                <div class="syntax">from textblob import TextBlob</div>
+                <p>
+                    Biblioteca de Python para procesamiento de lenguaje natural simplificado. Proporciona una API intuitiva para tareas como análisis de sentimientos, traducción, corrección ortográfica, tokenización y más. Es ideal para principiantes en NLP.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>TextBlob(texto)</h3>
+                <div class="syntax">blob = TextBlob("texto a analizar")</div>
+                <p>
+                    Constructor que crea un objeto TextBlob a partir de una cadena de texto. Este objeto contiene múltiples propiedades y métodos para analizar el texto, incluyendo sentiment, words, sentences, tags, entre otros.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.sentiment</h3>
+                <div class="syntax">blob.sentiment</div>
+                <p>
+                    Propiedad que devuelve un objeto con dos atributos: polarity y subjectivity. Esta propiedad utiliza modelos pre-entrenados para calcular automáticamente las métricas de sentimiento del texto analizado.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Polaridad (polarity)</h3>
+                <div class="syntax">blob.sentiment.polarity</div>
+                <p>
+                    Valor numérico entre -1 y 1 que indica la emoción del texto. Valores negativos (-1 a 0) indican sentimiento negativo, valores cercanos a 0 indican neutralidad, y valores positivos (0 a 1) indican sentimiento positivo. Es la métrica principal del análisis.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Subjetividad (subjectivity)</h3>
+                <div class="syntax">blob.sentiment.subjectivity</div>
+                <p>
+                    Valor entre 0 y 1 que mide cuán subjetivo u objetivo es el texto. 0 indica un texto completamente objetivo (hechos), mientras que 1 indica un texto completamente subjetivo (opiniones personales). Complementa el análisis de polaridad.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Umbral de clasificación</h3>
+                <div class="syntax">if polaridad > 0.1: ... elif polaridad < -0.1: ...</div>
+                <p>
+                    Valores de referencia para clasificar el sentimiento. Los umbrales de ±0.1 permiten identificar sentimientos claramente positivos o negativos, dejando un rango neutral para valores cercanos a cero. Estos umbrales pueden ajustarse según las necesidades del proyecto.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>f-strings</h3>
+                <div class="syntax">f"Texto: {variable}"</div>
+                <p>
+                    Formato de cadenas literal en Python (desde Python 3.6+) que permite insertar expresiones dentro de cadenas usando llaves {}. Facilita la creación de mensajes dinámicos. El modificador :.2f formatea números con 2 decimales.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Aplicaciones prácticas</h3>
+                <div class="syntax">Análisis de reseñas, redes sociales, encuestas</div>
+                <p>
+                    El análisis de sentimientos se usa para monitorear reputación de marca, analizar satisfacción de clientes, detectar crisis en redes sociales, filtrar comentarios, priorizar tickets de soporte, y tomar decisiones basadas en opiniones del público.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

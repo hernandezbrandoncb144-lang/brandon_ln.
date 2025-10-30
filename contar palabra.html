@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contar Palabras - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #88b04b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .code-block .number {
+            color: #ae81ff;
+        }
+
+        .output-section {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .output-section h3 {
+            color: #2d5016;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1rem;
+        }
+
+        .output-block {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            color: #6b5b95;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">📊</div>
+            <h1>Contar Palabras</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 Análisis de Frecuencia de Palabras</h2>
+            <p>
+                El conteo de palabras es una técnica fundamental en el procesamiento de lenguaje natural que nos permite analizar la frecuencia con la que aparecen las palabras en un texto. Esta información es crucial para identificar patrones, palabras clave y tendencias en documentos de texto.
+            </p>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código de Ejemplo</h2>
+            <div class="code-block">
+#frase ejemplo
+frase= "python es divertido y python poderoso "
+
+#1.-limpiar el texto (minuscula y sin puntuacion)
+frase_limpia= frase.replace(".","").replace(".","").lower()
+
+#2.- Dividir en palabras (tokenizacion)
+tokens=frase_limpia.split()
+#3.- contar palabras usando diccionario
+frecuencia={}
+for palabra in tokens:
+    if palabra in frecuencia:
+        frecuencia[palabra]+=1
+    else:
+        frecuencia[palabra]=1
+
+#4.-mostrar resultados
+print(frecuencia)
+        </div>
+
+        <div class="output-section">
+            <h3>📤 Resultado del código:</h3>
+            <div class="output-block">
+{'python': 2, 'es': 1, 'divertido': 1, 'y': 1, 'poderoso': 1}
+            </div>
+        </div>
+
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones y Estructuras</h2>
+
+            <div class="glossary-item">
+                <h3>Diccionario {}</h3>
+                <div class="syntax">diccionario = {}</div>
+                <p>
+                    Estructura de datos que almacena pares clave-valor. En este caso, las claves son las palabras y los valores son las frecuencias (número de veces que aparece cada palabra). Los diccionarios son ideales para conteos porque permiten acceso rápido y actualización eficiente.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Bucle for</h3>
+                <div class="syntax">for elemento in lista:</div>
+                <p>
+                    Estructura de control que itera sobre cada elemento de una secuencia (en este caso, cada palabra en la lista de tokens). Permite procesar cada palabra individualmente para contar su frecuencia.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Condicional if-else</h3>
+                <div class="syntax">if condicion: ... else: ...</div>
+                <p>
+                    Estructura que permite tomar decisiones en el código. Si la palabra ya existe en el diccionario, incrementa su contador en 1. Si no existe, la agrega al diccionario con un valor inicial de 1. Esta lógica es fundamental para el conteo de frecuencias.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Operador in</h3>
+                <div class="syntax">elemento in diccionario</div>
+                <p>
+                    Verifica si una clave existe en el diccionario. Devuelve True si la palabra ya fue agregada anteriormente, o False si es la primera vez que aparece. Es esencial para evitar errores al intentar incrementar valores que no existen.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Incremento +=</h3>
+                <div class="syntax">variable += 1</div>
+                <p>
+                    Operador de incremento que suma 1 al valor actual de una variable. Es equivalente a escribir "variable = variable + 1". Se utiliza para aumentar el contador cada vez que se encuentra una palabra repetida.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

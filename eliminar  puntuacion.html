@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar signos de puntuación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #8e44ad;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .btn-volver {
+            display: inline-block;
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-volver:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-section h2 {
+            color: #8e44ad;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            font-size: 2rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            border-radius: 15px;
+            padding: 25px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 1.5vw, 1rem);
+            line-height: 1.6;
+        }
+
+        .code-block code {
+            display: block;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+
+        .glosario {
+            display: grid;
+            gap: 20px;
+        }
+
+        .funcion-card {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 5px solid #8e44ad;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .funcion-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(142, 68, 173, 0.2);
+        }
+
+        .funcion-card h3 {
+            color: #8e44ad;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .funcion-card p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .parametros {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .parametros strong {
+            color: #8e44ad;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .parametros ul {
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .parametros li {
+            margin-bottom: 5px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #8e44ad;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .header, .content-section {
+                padding: 25px;
+            }
+
+            .code-block {
+                padding: 15px;
+            }
+
+            .funcion-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header, .content-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Búsqueda de Palabras</h1>
+            <p>Verifica si una palabra existe dentro de una frase usando comparaciones</p>
+            <a href="index.html" class="btn-volver">← Volver al inicio</a>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="icon">💻</span>Código del Ejemplo</h2>
+            <div class="code-block">
+                <pre>
+from tokens import texto_Limpio
+
+frase = "mis lenguajes favoritos son: html, php, python, pero me quedo con python"
+texto_limpio=frase.replace(",","").replace(".","").replace(":","").lower()
+tokens = texto_limpio.lower().split()
+#['python', 'es','divertido','y','poderoso']
+
+#crear una lista con las palabras verificadas
+verificadas=[] #lista vacia donde se agregan las palabras ya consultadas
+#python es
+for palabra in tokens: #python esta dentro de tokens
+    if palabra not in verificadas:
+        print(palabra,"tiene",len(palabra),"letras")
+        verificadas.append(palabra)
+        #python tiene 6 letras
+        #es tiene 2 letras
+        #es tiene 9 palabras</pre>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="icon">📚</span>Glosario de Funciones</h2>
+            <div class="glosario">
+                
+                <div class="funcion-card">
+                    <h3>lower()</h3>
+                    <span class="tag">Python</span>
+                    <p>Método de cadenas que convierte todos los caracteres alfabéticos de un string a minúsculas. Es muy útil para realizar comparaciones que no distingan entre mayúsculas y minúsculas.</p>
+                   
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Operador in</h3>
+                    <span class="tag">Python</span>
+                    <p>Operador que verifica si un valor está contenido dentro de una secuencia (string, lista, tupla, etc.). Para cadenas, verifica si una subcadena existe dentro de otra cadena.</p>
+          
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Estructura if-else</h3>
+                    <span class="tag">Python</span>
+                    <p>Estructura de control condicional que ejecuta diferentes bloques de código según si una condición es verdadera o falsa. Permite tomar decisiones en el flujo del programa.</p>
+                    
+                </div>
+
+                <div class="funcion-card">
+                    <h3>print()</h3>
+                    <span class="tag">Python</span>
+                    <p>Función integrada que muestra información en la consola. Es fundamental para la salida de datos y depuración de programas.</p>
+              
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Comparación sin distinción de mayúsculas</h3>
+                    <span class="tag">Concepto</span>
+                    <p>Técnica que consiste en convertir ambas cadenas a un mismo formato (mayúsculas o minúsculas) antes de compararlas. Esto permite hacer búsquedas más flexibles donde "Python", "PYTHON" y "python" se consideren iguales.</p>
+                   
+    </div>
+</body>
+</html>

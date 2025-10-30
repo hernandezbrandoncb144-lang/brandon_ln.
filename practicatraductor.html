@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica Traductor - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #88b04b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .install-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .install-section h3 {
+            color: white;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.8rem;
+        }
+
+        .install-code {
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .features-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .features-section h3 {
+            color: #6b5b95;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1rem;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-item .key {
+            background: #6b5b95;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .feature-item .description {
+            color: #333;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #6b5b95;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+
+            .feature-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">⌨️</div>
+            <h1>Práctica: Traductor Interactivo</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 Traductor con Control por Teclado</h2>
+            <p>
+                Este proyecto combina traducción automática con interacción por teclado para crear una aplicación práctica de línea de comandos. Utiliza la biblioteca <strong>deep-translator</strong> para las traducciones y <strong>keyboard</strong> para capturar las teclas presionadas en tiempo real.
+            </p>
+            <p>
+                El programa permite al usuario escribir texto en español y seleccionar el idioma de destino presionando una tecla específica, creando una experiencia interactiva y fluida.
+            </p>
+        </div>
+
+        <div class="install-section">
+            <h3>📦 Instalación de Dependencias</h3>
+            <div class="install-code">pip install deep-translator</div>
+            <div class="install-code">pip install keyboard</div>
+        </div>
+
+        <div class="features-section">
+            <h3>🎮 Controles del Traductor</h3>
+            <div class="feature-item">
+                <div class="key">I</div>
+                <div class="description">Traducir al inglés (English)</div>
+            </div>
+            <div class="feature-item">
+                <div class="key">A</div>
+                <div class="description">Traducir al alemán (Deutsch)</div>
+            </div>
+            <div class="feature-item">
+                <div class="key">F</div>
+                <div class="description">Traducir al francés (Français)</div>
+            </div>
+            <div class="feature-item">
+                <div class="key">Y</div>
+                <div class="description">Traducir al italiano (Italiano)</div>
+            </div>
+            <div class="feature-item">
+                <div class="key">P</div>
+                <div class="description">Traducir al portugués (Português)</div>
+            </div>
+            <div class="feature-item">
+                <div class="key">X</div>
+                <div class="description">Salir del programa</div>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código Completo</h2>
+            <div class="code-block">
+                <pre><code>
+from deep_translator import GoogleTranslator
+import keyboard
+
+def traducir(texto, idioma_destino):
+    traduccion = GoogleTranslator(source='es', target=idioma_destino).translate(texto)
+    return traduccion
+
+def main():
+    print("=== Traductor interactivo desde español ===")
+    print("Presiona una tecla:")
+    print("  I → Traducir al inglés")
+    print("  A → Traducir al alemán")
+    print("  F → Traducir al francés")
+    print("  Y → Traducir al italiano")
+    print("  P → Traducir al portugues")
+    print("  x → Salir del programa")
+
+    while True:
+        texto = input("\nEscribe un texto en español: ")
+
+        print("\nAhora presiona una tecla para traducir:")
+        print("I (inglés) | A (alemán) | F (francés) |Y (italiano) |P portugues) | X (salir)")
+
+        while True:
+            if keyboard.is_pressed('I'):
+                print("\n Traducción al inglés:")
+                print(traducir(texto, 'en'))
+                break
+            elif keyboard.is_pressed('A'):
+                print("\n Traducción al alemán:")
+                print(traducir(texto, 'de'))
+                break
+            elif keyboard.is_pressed('F'):
+                print("\n Traducción al francés:")
+                print(traducir(texto, 'fr'))
+                break
+            elif keyboard.is_pressed('Y'):
+                print("\n Traducción al italiano:")
+                print(traducir(texto, 'it'))
+                break
+            elif keyboard.is_pressed('P'):
+                print("\n Traducción al portugues:")
+                print(traducir(texto, 'pt'))
+                break
+            elif keyboard.is_pressed('X'):
+                print("\n HAS SALIDO DEL PROGRAMA")
+                return
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+
+
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
+    <span class="function">main</span>()
+            </div>
+        </div>
+
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones y Conceptos</h2>
+
+            <div class="glossary-item">
+                <h3>deep-translator</h3>
+                <div class="syntax">from deep_translator import GoogleTranslator</div>
+                <p>
+                    Biblioteca de Python que proporciona una interfaz unificada para múltiples servicios de traducción. GoogleTranslator es más estable y confiable que googletrans, ofreciendo traducción gratuita sin límites estrictos. Soporta más de 100 idiomas.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>keyboard</h3>
+                <div class="syntax">import keyboard</div>
+                <p>
+                    Biblioteca que permite capturar y controlar eventos del teclado. Funciona a nivel del sistema operativo, detectando teclas presionadas en tiempo real. <strong>Nota:</strong> En Windows puede requerir permisos de administrador.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>keyboard.is_pressed()</h3>
+                <div class="syntax">keyboard.is_pressed('tecla')</div>
+                <p>
+                    Función que verifica si una tecla específica está siendo presionada en ese momento. Devuelve True si la tecla está presionada, False en caso contrario. Se usa dentro de un bucle para detectar la interacción del usuario.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>GoogleTranslator()</h3>
+                <div class="syntax">GoogleTranslator(source='es', target='en')</div>
+                <p>
+                    Clase de deep-translator que crea un objeto traductor configurado con idioma origen y destino. Los parámetros 'source' y 'target' usan códigos ISO 639-1. Se puede reutilizar para múltiples traducciones con la misma configuración.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.translate()</h3>
+                <div class="syntax">traductor.translate(texto)</div>
+                <p>
+                    Método que realiza la traducción del texto proporcionado según la configuración del traductor. Devuelve directamente el texto traducido como string. Requiere conexión a internet para funcionar correctamente.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Bucle while True</h3>
+                <div class="syntax">while True: ...</div>
+                <p>
+                    Bucle infinito que se ejecuta continuamente hasta encontrar una instrucción break o return. En este programa, el bucle externo mantiene el traductor activo, mientras que el bucle interno espera la presión de una tecla.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>if __name__ == "__main__":</h3>
+                <div class="syntax">if __name__ == "__main__": main()</div>
+                <p>
+                    Patrón que permite ejecutar código solo cuando el archivo se ejecuta directamente, no cuando se importa como módulo. Es una buena práctica en Python para organizar el punto de entrada de los programas.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>input()</h3>
+                <div class="syntax">texto = input("mensaje")</div>
+                <p>
+                    Función que muestra un mensaje y espera que el usuario escriba texto. Pausa la ejecución del programa hasta que el usuario presiona Enter. El texto ingresado se devuelve como string.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Estructura elif</h3>
+                <div class="syntax">if ... elif ... elif ... else ...</div>
+                <p>
+                    Cadena de condiciones donde cada elif (else if) se evalúa solo si las condiciones anteriores son falsas. Permite manejar múltiples opciones de forma eficiente. En este caso, detecta qué tecla fue presionada.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

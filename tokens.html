@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokens - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #88b04b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #66d9ef;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #6b5b95;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">🔤</div>
+            <h1>Tokens en Python</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 ¿Qué son los Tokens?</h2>
+            <p>
+                Los tokens en Python, específicamente en lenguaje natural, se refieren a la descomposición de un texto (oración, frase o archivo de texto) con el objetivo de poder analizar el lenguaje escrito. Por ejemplo: contar palabras, contar longitud de las palabras, descubrir el sentimiento plasmado en el texto, traducirlo, etc.
+            </p>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código de Ejemplo</h2>
+            <div class="code-block">
+'''
+tokens en python, especificamente lenguaje natural
+se refiere ala dezcomposicion de un texto (oracion frase archivo de texto
+con el objetivo de poder analizar el lenguaje escrito , por ejemplo
+contar palabras contar longitud de las palabras descubrir el sentimiento plasmado
+en el texto, traducirlo, etc.
+'''
+texto="hola, bienvenido al curso de Lenguaje natural con python "
+
+#Limpieza basica
+texto_Limpio=texto.replace(",","").replace(",","").lower()
+
+#tokenizacion (separar por espacios)
+tokens= texto_Limpio.split()
+''' divide un texto en partes separadas por espacios (por defecto) y devuelve una lista de
+palabras. cada palabra se convierte en un elemento de la lista'''
+
+        </div>
+
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones</h2>
+
+            <div class="glossary-item">
+                <h3>.replace()</h3>
+                <div class="syntax">texto.replace(viejo, nuevo)</div>
+                <p>
+                    Reemplaza todas las ocurrencias de un carácter o cadena por otra. En este ejemplo, se utiliza para eliminar las comas y puntos del texto original, dejándolo más limpio para el análisis.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.lower()</h3>
+                <div class="syntax">texto.lower()</div>
+                <p>
+                    Convierte todos los caracteres del texto a minúsculas. Esto es importante en el procesamiento de lenguaje natural para normalizar el texto y tratar palabras como "Hola" y "hola" de manera idéntica.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.split()</h3>
+                <div class="syntax">texto.split(separador)</div>
+                <p>
+                    Divide un texto en partes separadas por espacios (por defecto) y devuelve una lista de palabras. Cada palabra se convierte en un elemento de la lista. Esta es la función clave para la tokenización, ya que transforma una cadena de texto continua en elementos individuales que pueden ser analizados por separado.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

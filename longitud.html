@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longitud de Palabras - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #88b04b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .output-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .output-section h3 {
+            color: #6b5b95;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1.5rem;
+        }
+
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .word-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .word-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .word-card .word {
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-weight: bold;
+            color: #6b5b95;
+            margin-bottom: 0.5rem;
+        }
+
+        .word-card .length {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #555;
+        }
+
+        .word-card .bar {
+            height: 8px;
+            background: #6b5b95;
+            border-radius: 4px;
+            margin-top: 0.8rem;
+            transition: width 0.5s ease;
+        }
+
+        .flow-diagram {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .flow-diagram h3 {
+            color: #6b5b95;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .flow-step {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #6b5b95;
+        }
+
+        .flow-step .step-number {
+            display: inline-block;
+            background: #6b5b95;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);
+            color: #6b5b95;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+
+            .word-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">📏</div>
+            <h1>Longitud de Palabras</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 Análisis de Longitud de Palabras</h2>
+            <p>
+                El análisis de longitud de palabras es una técnica fundamental en procesamiento de lenguaje natural que permite medir cuántos caracteres contiene cada palabra. Esta métrica es útil para análisis estadísticos, legibilidad de textos, complejidad lingüística y filtrado de palabras según su tamaño.
+            </p>
+            <p>
+                En este ejemplo, además de contar la longitud, implementamos un sistema para evitar palabras duplicadas, mostrando solo las palabras únicas con su respectiva longitud.
+            </p>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código de Ejemplo</h2>
+            <div class="code-block">
+                <pre>
+from tokens import texto_Limpio
+
+frase = "mis lenguajes favoritos son: html, php, python, pero me quedo con python"
+texto_limpio=frase.replace(",","").replace(".","").replace(":","").lower()
+tokens = texto_limpio.lower().split()
+#['python', 'es','divertido','y','poderoso']
+
+#crear una lista con las palabras verificadas
+verificadas=[] #lista vacia donde se agregan las palabras ya consultadas
+#python es
+for palabra in tokens: #python esta dentro de tokens
+    if palabra not in verificadas:
+        print(palabra,"tiene",len(palabra),"letras")
+        verificadas.append(palabra)
+        #python tiene 6 letras
+        #es tiene 2 letras
+        #es tiene 9 palabras
+                </pre>
+
+            </div>
+        </div>
+
+        
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones y Conceptos</h2>
+
+            <div class="glossary-item">
+                <h3>len()</h3>
+                <div class="syntax">len(objeto)</div>
+                <p>
+                    Función incorporada de Python que devuelve la longitud (número de elementos) de un objeto. Para strings, cuenta el número de caracteres. Para listas, cuenta el número de elementos. Es una de las funciones más utilizadas en análisis de texto.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>not in</h3>
+                <div class="syntax">elemento not in lista</div>
+                <p>
+                    Operador lógico que verifica si un elemento NO está presente en una secuencia (lista, tupla, string, etc.). Devuelve True si el elemento no existe, False si existe. Es el opuesto del operador 'in' y se usa para evitar duplicados.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>.append()</h3>
+                <div class="syntax">lista.append(elemento)</div>
+                <p>
+                    Método que agrega un elemento al final de una lista existente. Modifica la lista original en lugar de crear una nueva. Es fundamental para construir listas dinámicamente durante la ejecución del programa.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Lista de verificadas</h3>
+                <div class="syntax">verificadas = []</div>
+                <p>
+                    Técnica para rastrear elementos ya procesados. Inicializamos una lista vacía y vamos agregando elementos conforme los procesamos. Esto permite evitar el procesamiento duplicado de palabras que aparecen múltiples veces en el texto.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Encadenamiento de métodos</h3>
+                <div class="syntax">texto.replace(...).replace(...).lower()</div>
+                <p>
+                    Técnica que permite aplicar múltiples métodos consecutivamente sobre el mismo objeto. Cada método devuelve un nuevo string sobre el cual se aplica el siguiente método. Hace el código más conciso y legible.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Limpieza de texto</h3>
+                <div class="syntax">texto.replace(viejo, nuevo)</div>
+                <p>
+                    Proceso de eliminar o reemplazar caracteres no deseados del texto. En este caso, eliminamos signos de puntuación (comas, puntos, dos puntos) para que no afecten el conteo de longitud de las palabras. Es un paso crucial en el preprocesamiento de texto.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Evitar duplicados</h3>
+                <div class="syntax">if elemento not in lista_verificadas:</div>
+                <p>
+                    Estrategia para procesar cada palabra única solo una vez. Antes de procesar una palabra, verificamos si ya está en nuestra lista de verificadas. Si no está, la procesamos y la agregamos a la lista. Esto es útil cuando queremos estadísticas de palabras únicas.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Aplicaciones prácticas</h3>
+                <div class="syntax">Análisis de complejidad, filtrado, estadísticas</div>
+                <p>
+                    El análisis de longitud se usa para: calcular la complejidad de lectura de textos, filtrar palabras cortas (artículos, preposiciones), identificar palabras técnicas (generalmente más largas), validar límites de caracteres, y crear estadísticas descriptivas del texto.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
