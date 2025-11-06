@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #d35400;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+        }
+
+        .btn-volver {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6a3d 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(211, 84, 0, 0.3);
+        }
+
+        .btn-volver:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(211, 84, 0, 0.4);
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-section h2 {
+            color: #d35400;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            font-size: 2rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            border-radius: 15px;
+            padding: 25px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 1.5vw, 1rem);
+            line-height: 1.6;
+        }
+
+        .code-block code {
+            display: block;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+
+        .number {
+            color: #bd93f9;
+        }
+
+        .glosario {
+            display: grid;
+            gap: 20px;
+        }
+
+        .funcion-card {
+            background: linear-gradient(135deg, #fff5eb 0%, #ffe8d6 100%);
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 5px solid #ff6a3d;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .funcion-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(211, 84, 0, 0.2);
+        }
+
+        .funcion-card h3 {
+            color: #d35400;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .funcion-card p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .parametros {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .parametros strong {
+            color: #d35400;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .parametros ul {
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .parametros li {
+            margin-bottom: 5px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #ff6a3d;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
+        .ejemplo-box {
+            background: #fff9f0;
+            border-left: 4px solid #ff9a56;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .header, .content-section {
+                padding: 25px;
+            }
+
+            .code-block {
+                padding: 15px;
+            }
+
+            .funcion-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header, .content-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Chatbot</h1>
+            <p>Ejemplo de chatbot básico con listas y respuestas aleatorias</p>
+            <a href="index.html" class="btn-volver">← Volver al inicio</a>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="icon">💻</span>Código del Ejemplo</h2>
+            <div class="code-block">
+                <pre>
+#ejemplo de chat bot con listas basico
+import random
+
+#LISTA DE SALUDOS Y RESPUESTAS
+saludos=["hola","que tal","buenos dias","buenas tardes","buen dia"]
+respuesta_saludos=["hola como estas?","como puedo ayudarte?","hola como te va","que hay?"]
+despedida=["adios","bye","gracias","nos vemos","hasta luego","salir"]
+respuesta_despedida=["adios","hasta pronto","fue un placer ayudarte","cuidate","nos vemos luego","bye"]
+preguntas=["te gustan los viajes","te gusta tomar fotos de tus viajes","te gustan los paisajes","te gusta comprar recuerdos"]
+respuestas_preguntas=["Claro que si","POR SUPUESTO","Lo amo","Me encantan "]
+pregunt=["quien eres tu","como te llamas","presentate"]
+resp=["Yo soy Chato tu Chatbot de confianza","Que onda amigo soy Chato","Me presento soy Chato una IA","Encantado de cococerte soy chato",
+      "Hola soy Chato, ven platiquemos"]
+
+#mensaje de vienvenida del chatbot
+print("Hola soy chato, tu Chatbot de confianza, si deseas terminar escribe 'salir'")
+
+while True:
+    usuario=input("tu:").lower().strip()
+
+    if usuario in saludos:
+        print("Chatbot:",random.choice(respuesta_saludos))
+
+    elif usuario in preguntas:
+        print("Chatbot:",random.choice(respuestas_preguntas))
+
+    elif usuario in pregunt:
+        print("Chatbot:",random.choice(resp))
+
+    elif usuario in despedida:
+        print("Chatbot:",random.choice(respuesta_despedida))
+
+        break</pre>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="icon">📚</span>Glosario de Funciones</h2>
+            <div class="glosario">
+                
+                <div class="funcion-card">
+                    <h3>import random</h3>
+                    <span class="tag">Python</span>
+                    <span class="tag">Módulo</span>
+                    <p>Importa el módulo random que permite generar elementos aleatorios. Se usa para que el chatbot no responda siempre lo mismo y parezca más natural.</p>
+                    <div class="parametros">
+                        <strong>Funciones principales:</strong>
+                        <ul>
+                            <li><code>random.choice()</code>: Selecciona elemento aleatorio de una lista</li>
+                            <li><code>random.randint()</code>: Genera número entero aleatorio</li>
+                            <li><code>random.shuffle()</code>: Mezcla elementos de una lista</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Listas en Python</h3>
+                    <span class="tag">Python</span>
+                    <span class="tag">Estructura de Datos</span>
+                    <p>Estructura de datos que almacena múltiples elementos. El chatbot usa listas para guardar las posibles entradas del usuario y las respuestas correspondientes.</p>
+                    <div class="parametros">
+                        <strong>Listas del chatbot:</strong>
+                        <div class="ejemplo-box">
+                            <strong>saludos</strong> = ["hola", "que tal", ...]<br>
+                            → Palabras de saludo que el usuario puede escribir<br><br>
+                            
+                            <strong>respuesta_saludos</strong> = ["hola como estas?", ...]<br>
+                            → Posibles respuestas a saludos<br><br>
+                            
+                            <strong>despedida</strong> = ["adios", "bye", "salir", ...]<br>
+                            → Palabras para terminar la conversación<br><br>
+                            
+                            <strong>respuesta_despedida</strong> = ["adios", "hasta pronto", ...]<br>
+                            → Posibles respuestas de despedida
+                        </div>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Lista: saludos</h3>
+                    <span class="tag">Variable</span>
+                    <p>Lista que contiene las diferentes formas en que el usuario puede saludar al chatbot. Se usa para detectar cuando el usuario quiere iniciar una conversación.</p>
+                    <div class="parametros">
+                        <strong>Contiene:</strong>
+                        <ul>
+                            <li>"hola"</li>
+                            <li>"que tal"</li>
+                            <li>"buenos dias"</li>
+                            <li>"buenas tardes"</li>
+                            <li>"buen dia"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Lista: preguntas</h3>
+                    <span class="tag">Variable</span>
+                    <p>Lista con preguntas específicas que el chatbot puede reconocer. En este caso, son preguntas sobre viajes y fotografía.</p>
+                    <div class="parametros">
+                        <strong>Contiene:</strong>
+                        <ul>
+                            <li>"te gustan los viajes"</li>
+                            <li>"te gusta tomar fotos de tus viajes"</li>
+                            <li>"te gustan los paisajes"</li>
+                            <li>"te gusta comprar recuerdos"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Lista: pregunt</h3>
+                    <span class="tag">Variable</span>
+                    <p>Lista de preguntas sobre la identidad del chatbot. Permite que el usuario pregunte quién es el bot.</p>
+                    <div class="parametros">
+                        <strong>Contiene:</strong>
+                        <ul>
+                            <li>"quien eres tu"</li>
+                            <li>"como te llamas"</li>
+                            <li>"presentate"</li>
+                        </ul>
+                        <strong>Respuestas:</strong>
+                        <ul>
+                            <li>"Yo soy Chato tu Chatbot de confianza"</li>
+                            <li>"Que onda amigo soy Chato"</li>
+                            <li>"Me presento soy Chato una IA"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>print()</h3>
+                    <span class="tag">Python</span>
+                    <p>Muestra mensajes en la consola. Se usa para mostrar el mensaje de bienvenida y las respuestas del chatbot.</p>
+                    <div class="parametros">
+                        <strong>Usos en el código:</strong>
+                        <ul>
+                            <li>Mensaje de bienvenida inicial</li>
+                            <li>Mostrar respuestas del chatbot precedidas por "Chatbot:"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>while True:</h3>
+                    <span class="tag">Python</span>
+                    <p>Bucle infinito que mantiene la conversación activa. Permite que el usuario escriba múltiples mensajes hasta que decida salir.</p>
+                    <div class="parametros">
+                        <strong>Función:</strong>
+                        <ul>
+                            <li>Mantiene el chat en ejecución</li>
+                            <li>Permite conversación continua</li>
+                            <li>Solo termina con break (al despedirse)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>input()</h3>
+                    <span class="tag">Python</span>
+                    <p>Captura el texto que escribe el usuario. El prompt "tu:" indica que es el turno del usuario para escribir.</p>
+                    <div class="parametros">
+                        <strong>Parámetros:</strong>
+                        <ul>
+                            <li><code>prompt</code>: "tu:" - Indicador de turno del usuario</li>
+                        </ul>
+                        <strong>Retorna:</strong>
+                        <ul>
+                            <li>String con el texto ingresado por el usuario</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>.lower()</h3>
+                    <span class="tag">Python</span>
+                    <span class="tag">Método String</span>
+                    <p>Convierte todo el texto a minúsculas. Permite que el chatbot reconozca "HOLA", "Hola" o "hola" como la misma palabra.</p>
+                    <div class="parametros">
+                        <strong>Ejemplo:</strong>
+                        <div class="ejemplo-box">
+                            "HOLA".lower() → "hola"<br>
+                            "Buenos Dias".lower() → "buenos dias"<br>
+                            "ByE".lower() → "bye"
+                        </div>
+                        <strong>Ventaja:</strong>
+                        <ul>
+                            <li>Hace la detección insensible a mayúsculas</li>
+                            <li>Mejora la flexibilidad del chatbot</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>.strip()</h3>
+                    <span class="tag">Python</span>
+                    <span class="tag">Método String</span>
+                    <p>Elimina espacios en blanco al inicio y final del texto. Evita problemas cuando el usuario escribe espacios adicionales.</p>
+                    <div class="parametros">
+                        <strong>Ejemplo:</strong>
+                        <div class="ejemplo-box">
+                            "  hola  ".strip() → "hola"<br>
+                            " buenos dias ".strip() → "buenos dias"<br>
+                            "adios   ".strip() → "adios"
+                        </div>
+                        <strong>Ventaja:</strong>
+                        <ul>
+                            <li>Limpia la entrada del usuario</li>
+                            <li>Evita errores por espacios extras</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>Operador 'in'</h3>
+                    <span class="tag">Python</span>
+                    <span class="tag">Operador</span>
+                    <p>Verifica si un elemento está dentro de una lista. Permite detectar si lo que escribió el usuario coincide con alguna opción conocida.</p>
+                    <div class="parametros">
+                        <strong>Uso en el código:</strong>
+                        <div class="ejemplo-box">
+                            if usuario in saludos:<br>
+                            → ¿El texto está en la lista de saludos?<br><br>
+                            
+                            Usuario escribe: "hola"<br>
+                            "hola" in ["hola", "que tal", ...] → True<br>
+                            → Ejecuta respuesta de saludo
+                        </div>
+                        <strong>Función:</strong>
+                        <ul>
+                            <li>Compara la entrada con listas predefinidas</li>
+                            <li>Retorna True si encuentra coincidencia</li>
+                            <li>Retorna False si no encuentra coincidencia</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>random.choice()</h3>
+                    <span class="tag">Random</span>
+                    <p>Selecciona aleatoriamente un elemento de una lista. Hace que el chatbot responda de forma variada y parezca más natural.</p>
+                    <div class="parametros">
+                        <strong>Parámetros:</strong>
+                        <ul>
+                            <li><code>seq</code>: Lista de la cual se seleccionará un elemento</li>
+                        </ul>
+                        <strong>Ejemplo:</strong>
+                        <div class="ejemplo-box">
+                            respuesta_saludos = ["hola como estas?", "como puedo ayudarte?", ...]<br><br>
+                            
+                            random.choice(respuesta_saludos)<br>
+                            → Puede retornar cualquiera de las opciones<br>
+                            → Cada vez puede ser diferente
+                        </div>
+                        <strong>Ventaja:</strong>
+                        <ul>
+                            <li>Conversación más dinámica</li>
+                            <li>No repite siempre la misma respuesta</li>
+                            <li>Simula comportamiento humano</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>if, elif, else</h3>
+                    <span class="tag">Python</span>
+                    <p>Estructuras condicionales que determinan qué respuesta dar según lo que escribió el usuario. Evalúa en orden hasta encontrar una coincidencia.</p>
+                    <div class="parametros">
+                        <strong>Flujo del chatbot:</strong>
+                        <div class="ejemplo-box">
+                            <strong>if usuario in saludos:</strong><br>
+                            &nbsp;&nbsp;→ Responde con saludo aleatorio 👋<br><br>
+                            
+                            <strong>elif usuario in preguntas:</strong><br>
+                            &nbsp;&nbsp;→ Responde pregunta sobre viajes 🗺️<br><br>
+                            
+                            <strong>elif usuario in pregunt:</strong><br>
+                            &nbsp;&nbsp;→ Se presenta como Chato 🤖<br><br>
+                            
+                            <strong>elif usuario in despedida:</strong><br>
+                            &nbsp;&nbsp;→ Se despide y termina (break) 👋
+                        </div>
+                    </div>
+                </div>
+
+                <div class="funcion-card">
+                    <h3>break</h3>
+                    <span class="tag">Python</span>
+                    <p>Termina el bucle while True cuando el usuario se despide. Finaliza la conversación y cierra el chatbot.</p>
+                    <div class="parametros">
+                        <strong>Función:</strong>
+                        <ul>
+                            <li>Se ejecuta cuando usuario escribe palabra de despedida</li>
+                            <li>Termina el bucle infinito</li>
+                            <li>Cierra el programa del chatbot</li>
+                        </ul>
+                        <strong>Palabras que activan break:</strong>
+                        <ul>
+                            <li>"adios", "bye", "gracias"</li>
+                            <li>"nos vemos", "hasta luego"</li>
+                            <li>"salir"</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
