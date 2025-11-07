@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat con Sentimientos - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #88b04b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .install-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .install-section h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.8rem;
+        }
+
+        .install-code {
+            background: rgba(255, 255, 255, 0.8);
+            color: #2d2d2d;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.5;
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .code-block .number {
+            color: #ae81ff;
+        }
+
+        .demo-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .demo-section h3 {
+            color: #6b5b95;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .chat-demo {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .chat-message.user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+        }
+
+        .chat-message.bot {
+            background: white;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .chat-message .sender {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .chat-message .sentiment-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #6b5b95;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            color: #6b5b95;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">💬</div>
+            <h1>Chatbot con Análisis de Sentimientos</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 Chatbot Inteligente con Detección Emocional</h2>
+            <p>
+                Este proyecto combina tres poderosas tecnologías: un sistema de chatbot conversacional, análisis de sentimientos con TextBlob y traducción automática con Deep-Translator. El resultado es un asistente virtual capaz de entender no solo las palabras, sino también las emociones detrás de ellas.
+            </p>
+            <p>
+                El chatbot llamado "Chato" puede detectar saludos, despedidas y, lo más importante, analizar el estado emocional del usuario en tiempo real, respondiendo de manera empática según la polaridad del sentimiento detectado.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">👋</div>
+                <h3>Reconocimiento de Patrones</h3>
+                <p>Identifica saludos, despedidas y preguntas comunes usando listas predefinidas</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🌐</div>
+                <h3>Traducción Automática</h3>
+                <p>Traduce del español al inglés para mejorar el análisis de sentimientos</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">😊</div>
+                <h3>Análisis Emocional</h3>
+                <p>Detecta si el usuario está feliz, triste o neutral mediante polaridad</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎲</div>
+                <h3>Respuestas Variadas</h3>
+                <p>Utiliza random.choice() para respuestas más naturales y dinámicas</p>
+            </div>
+        </div>
+
+        <div class="install-section">
+            <h3>📦 Instalación de Bibliotecas</h3>
+            <div class="install-code">pip install textblob</div>
+            <div class="install-code">pip install deep-translator</div>
+            <div class="install-code">python -m textblob.download_corpora</div>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código Completo del Chatbot</h2>
+            <div class="code-block">
+                <pre>
+# Chatbot con análisis de sentimientos usando TextBlob y Deep-Translator
+import random
+from textblob import TextBlob
+from deep_translator import GoogleTranslator
+
+# Inicializar traductor
+traductor = GoogleTranslator(source='es', target='en')
+
+# LISTAS DE SALUDOS Y RESPUESTAS
+saludos = ["hola", "que tal", "buenos dias", "buenas tardes", "buen dia"]
+respuesta_saludos = ["hola como estas?", "como puedo ayudarte?", "hola como te va", "que hay?"]
+despedida = ["adios", "bye", "gracias", "nos vemos", "hasta luego", "salir"]
+respuesta_despedida = ["adios", "hasta pronto", "fue un placer ayudarte", "cuidate", "nos vemos luego", "bye"]
+
+# LISTAS PARA ANÁLISIS DE SENTIMIENTOS
+pregunta_sentimiento = ["como estas", "como te sientes", "que tal estas", "como andas"]
+respuesta_feliz = ["Me alegra que estes feliz!", "Que bueno que te sientas bien!", "Genial! Sigue asi!",
+                   "Excelente que estes contento!"]
+respuesta_triste = ["Lamento que estes triste", "Animo, todo mejora!", "Entiendo como te sientes",
+                    "Espero que te sientas mejor pronto"]
+respuesta_neutral = ["Entiendo", "Ok, gracias por compartir", "Comprendo como te sientes"]
+
+# Mensaje de bienvenida del chatbot
+print("Hola soy Chato, tu Chatbot de confianza, si deseas terminar escribe 'salir'")
+
+while True:
+    usuario = input("Tu: ").lower().strip()
+
+    if usuario in saludos:
+        print("Chatbot:", random.choice(respuesta_saludos))
+
+    elif usuario in pregunta_sentimiento:
+        print("Chatbot: Cuentame, ¿como te sientes? (feliz o triste)")
+
+    elif usuario in despedida:
+        print("Chatbot:", random.choice(respuesta_despedida))
+        break
+
+    else:
+        # Analizar sentimiento con TextBlob y Deep-Translator
+        try:
+            # Traducir al inglés
+            texto_ingles = traductor.translate(usuario)
+
+            # Analizar sentimiento
+            analisis = TextBlob(texto_ingles)
+            polaridad = analisis.sentiment.polarity
+
+            print(f"Chatbot: [Analizando sentimiento... Polaridad: {polaridad:.2f}]")
+
+            # Responder según el sentimiento
+            if polaridad > 0.2:
+                print("Chatbot:", random.choice(respuesta_feliz))
+            elif polaridad < -0.2:
+                print("Chatbot:", random.choice(respuesta_triste))
+            else:
+                print("Chatbot:", random.choice(respuesta_neutral))
+
+        except Exception as e:
+            print("Chatbot: No entendi muy bien, ¿puedes decirlo de otra forma?")
+                </pre>
+
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>💬 Ejemplo de Conversación</h3>
+            <div class="chat-demo">
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chato:</div>
+                    Hola soy Chato, tu Chatbot de confianza, si deseas terminar escribe 'salir'
+                </div>
+                <div class="chat-message user">
+                    <div class="sender">👤 Usuario:</div>
+                    hola
+                </div>
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chato:</div>
+                    ¿Cómo puedo ayudarte?
+                </div>
+                <div class="chat-message user">
+                    <div class="sender">👤 Usuario:</div>
+                    Estoy muy feliz hoy, todo salió perfecto
+                </div>
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chato:</div>
+                    [Analizando sentimiento... Polaridad: 0.85]<br>
+                    ¡Me alegra que estés feliz!
+                    <span class="sentiment-badge">😊 Sentimiento Positivo</span>
+                </div>
+                <div class="chat-message user">
+                    <div class="sender">👤 Usuario:</div>
+                    Me siento triste y decepcionado
+                </div>
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chato:</div>
+                    [Analizando sentimiento... Polaridad: -0.60]<br>
+                    Lamento que estés triste. ¡Ánimo, todo mejora!
+                    <span class="sentiment-badge">😞 Sentimiento Negativo</span>
+                </div>
+                <div class="chat-message user">
+                    <div class="sender">👤 Usuario:</div>
+                    gracias, nos vemos
+                </div>
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chato:</div>
+                    Hasta pronto, cuídate
+                </div>
+            </div>
+        </div>
+
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones y Conceptos</h2>
+
+            <div class="glossary-item">
+                <h3>random.choice()</h3>
+                <div class="syntax">random.choice(lista)</div>
+                <p>
+                    Función del módulo random que selecciona un elemento aleatorio de una lista. Permite que el chatbot tenga respuestas variadas en lugar de repetir siempre lo mismo, haciéndolo más natural y conversacional.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>while True:</h3>
+                <div class="syntax">while True: ... break</div>
+                <p>
+                    Bucle infinito que mantiene el chatbot activo esperando continuamente la entrada del usuario. Solo se detiene cuando encuentra una instrucción break (en este caso, cuando el usuario se despide).
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>in (operador de pertenencia)</h3>
+                <div class="syntax">elemento in lista</div>
+                <p>
+                    Operador que verifica si un elemento está presente en una secuencia. Se usa para detectar si el mensaje del usuario coincide con alguna palabra en las listas de saludos, despedidas o preguntas de sentimiento.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>try-except</h3>
+                <div class="syntax">try: ... except Exception as e: ...</div>
+                <p>
+                    Manejo de excepciones que previene que el programa se detenga por errores. Si la traducción o análisis falla (por problemas de conexión, por ejemplo), el chatbot responde con un mensaje de error amigable en lugar de crashear.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Listas de patrones</h3>
+                <div class="syntax">saludos = ["hola", "que tal", ...]</div>
+                <p>
+                    Técnica de pattern matching básica donde definimos listas de palabras clave que el chatbot reconoce. Es simple pero efectiva para detectar intenciones comunes sin necesidad de modelos complejos de NLP.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Umbrales de polaridad</h3>
+                <div class="syntax">if polaridad > 0.2: ... elif polaridad < -0.2:</div>
+                <p>
+                    Valores de corte para clasificar sentimientos. Polaridad mayor a 0.2 indica felicidad, menor a -0.2 indica tristeza, y entre -0.2 y 0.2 se considera neutral. Estos umbrales pueden ajustarse según la sensibilidad deseada.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>input().lower().strip()</h3>
+                <div class="syntax">usuario = input("Tu: ").lower().strip()</div>
+                <p>
+                    Encadenamiento de métodos para normalizar la entrada: input() captura el texto, lower() lo convierte a minúsculas para comparación consistente, y strip() elimina espacios innecesarios al inicio y final.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Flujo de decisión (if-elif-else)</h3>
+                <div class="syntax">if ... elif ... elif ... else ...</div>
+                <p>
+                    Estructura que prioriza las respuestas del chatbot: primero verifica saludos, luego preguntas de sentimiento, después despedidas, y finalmente hace análisis de sentimientos para cualquier otro mensaje. El orden importa.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Combinación de tecnologías</h3>
+                <div class="syntax">Deep-Translator + TextBlob + Patrones</div>
+                <p>
+                    Este chatbot es un ejemplo de arquitectura híbrida: usa reglas simples (listas de patrones) para casos comunes, y NLP avanzado (traducción + análisis de sentimientos) para casos complejos. Combina lo mejor de ambos mundos: velocidad y precisión.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Experiencia de usuario</h3>
+                <div class="syntax">Respuestas variadas + Feedback visual</div>
+                <p>
+                    El chatbot muestra la polaridad detectada para transparencia, usa random.choice() para variedad, y responde empáticamente según el sentimiento. Esto crea una experiencia más humana y confiable que un chatbot de respuestas fijas.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
