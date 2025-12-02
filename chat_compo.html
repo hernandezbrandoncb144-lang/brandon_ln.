@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Componentes Arduino - Lenguaje Natural con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #0072ff;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #ff6b6b;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .components-showcase {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .components-showcase h3 {
+            color: #0072ff;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .component-chip {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .component-chip:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #0072ff;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .demo-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .demo-section h3 {
+            color: #0072ff;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .chat-interface {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-message.bot {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            max-width: 85%;
+        }
+
+        .chat-message.user {
+            background: white;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 70%;
+            margin-left: auto;
+        }
+
+        .chat-message .sender {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .chat-message.bot .sender {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .component-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .mini-chip {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .definition-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #0072ff;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: #0072ff;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: #2d2d2d;
+        }
+
+        .glossary-item p {
+            color: #333;
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #0072ff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+
+            .components-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">🤖⚡</div>
+            <h1>Chatbot de Componentes Arduino</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 Asistente de Aprendizaje Arduino</h2>
+            <p>
+                Este chatbot educativo utiliza un diccionario de componentes de Arduino para ayudar a estudiantes y entusiastas a aprender sobre electrónica. Funciona como un asistente interactivo que proporciona definiciones claras y precisas de cada componente.
+            </p>
+            <p>
+                El programa demuestra cómo usar estructuras de datos (diccionarios) combinadas con bucles y condicionales para crear una experiencia de aprendizaje conversacional. Incluye validación de entrada y mensajes de error amigables para guiar al usuario.
+            </p>
+        </div>
+
+        <div class="components-showcase">
+            <h3>🔌 Componentes Disponibles en la Base de Conocimientos</h3>
+            <div class="components-grid">
+                <div class="component-chip">Protoboard</div>
+                <div class="component-chip">Protoboard de Expansión</div>
+                <div class="component-chip">Potenciómetro</div>
+                <div class="component-chip">Módulo LCD</div>
+                <div class="component-chip">Sensor Ultrasónico</div>
+                <div class="component-chip">Motor DC</div>
+                <div class="component-chip">Sensor de Temperatura</div>
+                <div class="component-chip">Buzzer</div>
+                <div class="component-chip">Botón</div>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h2>💻 Código del Chatbot</h2>
+            <div class="code-block">
+            <pre>
+                crear un chatbot, que nos ayude a apremder
+#sobre los componentes de arduino.
+#en un alista cargar los componentes
+#enlistado en roborealm,preguntar
+#al chatbot que componenntes deseas aprender y
+#este te debe contestar el concepto del componente
+#seleccionado. si al escribir
+#el componenete lo escribimos mal ,el chatbot
+#te debe indicar que no entiende lo que escribiste
+#y pedirte q escribas correctamente el componente
+#valor de la prcatica 5 firmas
+
+componentes = {
+    "protoboard": "Es una placa de pruebas en los que se pueden insertar elementos electrónicos y cables"
+                  "con los que se arman circuitos sin la necesidad de soldar ninguno de los componentes.",
+    "protoboard de expansión": "Permite facilitar el uso entre la plataforma Arduino y cualquier otro hardware.",
+    "potenciometro": "Es un resistor variable que permite ajustar voltaje manualmente.",
+    "módulo lcd": "Se utiliza para mostrar información en proyectos de Arduino."
+                  "Los LCD Arduino son populares debido a su facilidad de uso y bajo costo.",
+    "sensor ultrasónico": "Es un transductor que mide la distancia de un objeto por medio del"
+                          "rebote de una onda sonora que trabaja en el rango de los ultrasonidos por eso no lo podemos escuchar.",
+    "motor dc": "Motor eléctrico simple que gira en un solo sentido según la polaridad.",
+    "sensor de temperatura": "Dispositivo que mide el nivel de calor del ambiente o superficies.",
+    "buzzer": "Componente que emite sonido o zumbidos.",
+    "boton": "Un interruptor que abre o cierra un circuito al presionarse."
+}
+
+print("hola cria soy tu Chatbot ╰(*°▽°*)╯ para aprender componentes de Arduino")
+print("Componentes disponibles:")
+for c in componentes:
+    print("-", c)
+
+while True:
+    componente = input("\n¿Sobre qué componente deseas aprender ? (escribe 'salir' para terminar): ").lower()
+
+    if componente == "salir":
+        print("haz salido del programa")
+        break
+
+    if componente in componentes:
+        print("\n Definición del componente:")
+        print(componentes[componente])
+    else:
+        print("No entiendo lo que escribiste. Revisa el nombre y escríbelo correctamente.")
+            </pre> 
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>💬 Ejemplo de Interacción con el Chatbot</h3>
+            <div class="chat-interface">
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chatbot Arduino:</div>
+                    Hola cria soy tu Chatbot ╰(*°▽°*)╯ para aprender componentes de Arduino
+                    <div style="margin-top: 0.8rem;">Componentes disponibles:</div>
+                    <div class="component-list">
+                        <span class="mini-chip">protoboard</span>
+                        <span class="mini-chip">protoboard de expansión</span>
+                        <span class="mini-chip">potenciometro</span>
+                        <span class="mini-chip">módulo lcd</span>
+                        <span class="mini-chip">sensor ultrasónico</span>
+                        <span class="mini-chip">motor dc</span>
+                        <span class="mini-chip">sensor de temperatura</span>
+                        <span class="mini-chip">buzzer</span>
+                        <span class="mini-chip">boton</span>
+                    </div>
+                </div>
+
+                <div class="chat-message user">
+                    <div class="sender">👤 Usuario:</div>
+                    potenciometro
+                </div>
+
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chatbot Arduino:</div>
+                    ✅ Definición del componente:
+                    <div class="definition-box">
+                        Es un resistor variable que permite ajustar voltaje manualmente.
+                    </div>
+                </div>
+
+                <div class="chat-message user">
+                    <div class="sender">👤 Usuario:</div>
+                    sensor ultrasónico
+                </div>
+
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chatbot Arduino:</div>
+                    ✅ Definición del componente:
+                    <div class="definition-box">
+                        Es un transductor que mide la distancia de un objeto por medio del rebote de una onda sonora que trabaja en el rango de los ultrasonidos por eso no lo podemos escuchar.
+                    </div>
+                </div>
+
+                <div class="chat-message user">
+                    <div class="sender">👤 Usuario:</div>
+                    resistencai
+                </div>
+
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chatbot Arduino:</div>
+                    ❌ No entiendo lo que escribiste. Revisa el nombre y escríbelo correctamente.
+                </div>
+
+                <div class="chat-message user">
+                    <div class="sender">👤 Usuario:</div>
+                    salir
+                </div>
+
+                <div class="chat-message bot">
+                    <div class="sender">🤖 Chatbot Arduino:</div>
+                    Haz salido del programa
+                </div>
+            </div>
+        </div>
+
+        <div class="glossary">
+            <h2>📚 Glosario de Funciones y Conceptos</h2>
+
+            <div class="glossary-item">
+                <h3>Diccionario de componentes</h3>
+                <div class="syntax">componentes = {"clave": "valor", ...}</div>
+                <p>
+                    Estructura de datos tipo diccionario donde las claves son nombres de componentes y los valores son sus definiciones. Es ideal para bases de conocimiento porque permite búsquedas rápidas por nombre (clave) y recuperación directa de información (valor).
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>for ... in diccionario</h3>
+                <div class="syntax">for c in componentes:</div>
+                <p>
+                    Al iterar sobre un diccionario directamente, se recorren las claves (nombres de componentes). Esto permite mostrar al usuario todos los componentes disponibles al inicio del programa para que sepa qué puede consultar.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Acceso a diccionario</h3>
+                <div class="syntax">componentes[componente]</div>
+                <p>
+                    Sintaxis para obtener el valor asociado a una clave en el diccionario. Si el usuario escribe "buzzer", componentes["buzzer"] devuelve su definición. Es una operación muy rápida con complejidad O(1).
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Validación de entrada</h3>
+                <div class="syntax">if componente in componentes:</div>
+                <p>
+                    Verifica si la entrada del usuario existe como clave en el diccionario antes de intentar acceder a ella. Esto previene errores KeyError y permite mostrar mensajes personalizados cuando el usuario comete errores de escritura.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Normalización con .lower()</h3>
+                <div class="syntax">componente = input(...).lower()</div>
+                <p>
+                    Convierte la entrada a minúsculas para que la búsqueda no sea sensible a mayúsculas. Así "Buzzer", "BUZZER" y "buzzer" se reconocen como el mismo componente. Es crucial para mejorar la experiencia del usuario.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Bucle de conversación</h3>
+                <div class="syntax">while True: ... break</div>
+                <p>
+                    Mantiene el chatbot activo para múltiples consultas hasta que el usuario escriba "salir". Permite una experiencia conversacional donde se pueden hacer varias preguntas sin reiniciar el programa.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Mensajes de error amigables</h3>
+                <div class="syntax">else: print("No entiendo...")</div>
+                <p>
+                    En lugar de mostrar un error técnico cuando el componente no existe, el chatbot responde con un mensaje amigable pidiendo al usuario que revise la escritura. Esto mejora la usabilidad y guía al usuario hacia una entrada correcta.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Emojis y caracteres Unicode</h3>
+                <div class="syntax">print("╰(*°▽°*)╯")</div>
+                <p>
+                    Uso de emojis y caracteres especiales para hacer el chatbot más amigable y expresivo. Python 3 soporta Unicode nativamente, permitiendo usar estos caracteres directamente en strings para crear una personalidad única del bot.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Base de conocimientos escalable</h3>
+                <div class="syntax">Agregar: componentes["nuevo"] = "definición"</div>
+                <p>
+                    El diseño basado en diccionarios hace que sea muy fácil expandir la base de conocimientos. Solo necesitas agregar más pares clave-valor al diccionario para incluir nuevos componentes sin cambiar la lógica del programa.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Chatbot educativo</h3>
+                <div class="syntax">Patrón: Consulta → Validación → Respuesta</div>
+                <p>
+                    Este patrón es fundamental en chatbots educativos: el usuario hace una consulta, el sistema valida que sea válida, y responde con información relevante o un mensaje de error constructivo. Es simple pero efectivo para aprendizaje interactivo.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
