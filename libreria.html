@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librerías de PNL para Chatbots - Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #6b5b95;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #fa709a;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .category-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .category-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-header h2 {
+            color: #6b5b95;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .category-header .category-icon {
+            font-size: 2rem;
+        }
+
+        .category-header p {
+            color: #666;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            line-height: 1.6;
+        }
+
+        .libraries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 0 0 15px 15px;
+        }
+
+        .library-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .library-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .library-card.pnl {
+            border-left-color: #667eea;
+        }
+
+        .library-card.ia {
+            border-left-color: #fa709a;
+        }
+
+        .library-card.platform {
+            border-left-color: #fee140;
+        }
+
+        .library-card h3 {
+            color: #6b5b95;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .library-card .install {
+            background: #f5f7fa;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            color: #333;
+            margin-bottom: 0.8rem;
+            display: inline-block;
+        }
+
+        .library-card p {
+            color: #555;
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            margin-bottom: 0.8rem;
+        }
+
+        .library-card .features {
+            margin-top: 1rem;
+        }
+
+        .library-card .features h4 {
+            color: #88b04b;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .library-card .features ul {
+            margin-left: 1.2rem;
+            color: #666;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+        }
+
+        .library-card .features li {
+            margin-bottom: 0.3rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag.beginner {
+            background: #d4fc79;
+            color: #2d5016;
+        }
+
+        .tag.intermediate {
+            background: #ffecd2;
+            color: #8b6508;
+        }
+
+        .tag.advanced {
+            background: #ffafbd;
+            color: #8b0000;
+        }
+
+        .comparison-table {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .comparison-table h2 {
+            color: #6b5b95;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: #f5f7fa;
+        }
+
+        .check {
+            color: #4caf50;
+            font-size: 1.2rem;
+        }
+
+        .cross {
+            color: #f44336;
+            font-size: 1.2rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .libraries-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.75rem;
+            }
+
+            th, td {
+                padding: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">📚</div>
+            <h1>Librerías de PNL para Chatbots en Python</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 Panorama de Tecnologías para Chatbots</h2>
+            <p>
+                El desarrollo de chatbots en Python cuenta con un ecosistema rico y diverso de bibliotecas especializadas. Desde procesamiento de lenguaje natural básico hasta integración con inteligencia artificial avanzada y conexión con plataformas de mensajería, existe una herramienta para cada necesidad.
+            </p>
+            <p>
+                Esta guía clasifica las principales librerías en tres categorías: Chatbots con PNL (procesamiento lingüístico), Chatbots con IA (aprendizaje automático), y Chatbots conectados a Plataformas (WhatsApp, Telegram, etc.).
+            </p>
+        </div>
+
+        <!-- CATEGORÍA 1: CHATBOTS CON PNL -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2><span class="category-icon">🧠</span> Chatbots con PNL (Procesamiento de Lenguaje Natural)</h2>
+                <p>Librerías enfocadas en entender y procesar el lenguaje humano mediante técnicas lingüísticas, sin necesariamente usar modelos de IA complejos.</p>
+            </div>
+            <div class="libraries-grid">
+                <div class="library-card pnl">
+                    <h3>NLTK</h3>
+                    <div class="install">pip install nltk</div>
+                    <p>Natural Language Toolkit es la biblioteca fundamental para PNL en Python. Ideal para aprender y experimentar con procesamiento de texto.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Tokenización avanzada</li>
+                            <li>Análisis sintáctico</li>
+                            <li>Etiquetado gramatical</li>
+                            <li>Corpus lingüísticos incluidos</li>
+                        </ul>
+                    </div>
+                    <span class="tag beginner">Principiante</span>
+                </div>
+
+                <div class="library-card pnl">
+                    <h3>spaCy</h3>
+                    <div class="install">pip install spacy</div>
+                    <p>Biblioteca de PNL industrial de alto rendimiento, optimizada para producción. Excelente para análisis rápido y preciso.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Reconocimiento de entidades (NER)</li>
+                            <li>Análisis de dependencias</li>
+                            <li>Vectorización de palabras</li>
+                            <li>Soporte multiidioma</li>
+                        </ul>
+                    </div>
+                    <span class="tag intermediate">Intermedio</span>
+                </div>
+
+                <div class="library-card pnl">
+                    <h3>TextBlob</h3>
+                    <div class="install">pip install textblob</div>
+                    <p>API simplificada para PNL. Perfecta para análisis de sentimientos y tareas básicas sin complejidad.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Análisis de sentimientos</li>
+                            <li>Traducción integrada</li>
+                            <li>Corrección ortográfica</li>
+                            <li>Interfaz intuitiva</li>
+                        </ul>
+                    </div>
+                    <span class="tag beginner">Principiante</span>
+                </div>
+
+                <div class="library-card pnl">
+                    <h3>ChatterBot</h3>
+                    <div class="install">pip install chatterbot</div>
+                    <p>Framework específico para crear chatbots conversacionales con aprendizaje automático basado en conversaciones.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Entrenamiento con diálogos</li>
+                            <li>Múltiples adaptadores de almacenamiento</li>
+                            <li>Lógica de conversación predefinida</li>
+                            <li>Fácil integración</li>
+                        </ul>
+                    </div>
+                    <span class="tag intermediate">Intermedio</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORÍA 2: CHATBOTS CON IA -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2><span class="category-icon">🤖</span> Chatbots con IA (Inteligencia Artificial)</h2>
+                <p>Librerías que utilizan modelos de aprendizaje profundo y transformers para generar respuestas inteligentes y contextuales.</p>
+            </div>
+            <div class="libraries-grid">
+                <div class="library-card ia">
+                    <h3>Transformers (Hugging Face)</h3>
+                    <div class="install">pip install transformers</div>
+                    <p>Biblioteca líder para usar modelos pre-entrenados como GPT, BERT, y otros. Estado del arte en IA conversacional.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Acceso a miles de modelos</li>
+                            <li>GPT, BERT, T5 y más</li>
+                            <li>Fine-tuning personalizado</li>
+                            <li>Generación de texto avanzada</li>
+                        </ul>
+                    </div>
+                    <span class="tag advanced">Avanzado</span>
+                </div>
+
+                <div class="library-card ia">
+                    <h3>Rasa</h3>
+                    <div class="install">pip install rasa</div>
+                    <p>Framework completo para construir asistentes conversacionales con IA contextual y gestión de diálogos.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>NLU (comprensión de intenciones)</li>
+                            <li>Gestión de diálogos contextuales</li>
+                            <li>Entrenamiento personalizado</li>
+                            <li>API REST incluida</li>
+                        </ul>
+                    </div>
+                    <span class="tag advanced">Avanzado</span>
+                </div>
+
+                <div class="library-card ia">
+                    <h3>LangChain</h3>
+                    <div class="install">pip install langchain</div>
+                    <p>Framework moderno para construir aplicaciones con LLMs (Large Language Models) como ChatGPT.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Cadenas de prompts</li>
+                            <li>Memoria conversacional</li>
+                            <li>Integración con bases de datos vectoriales</li>
+                            <li>Agentes inteligentes</li>
+                        </ul>
+                    </div>
+                    <span class="tag advanced">Avanzado</span>
+                </div>
+
+                <div class="library-card ia">
+                    <h3>DialogFlow (Python Client)</h3>
+                    <div class="install">pip install google-cloud-dialogflow</div>
+                    <p>Cliente de Python para DialogFlow de Google, plataforma de IA conversacional en la nube.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>IA de Google integrada</li>
+                            <li>Reconocimiento de intenciones</li>
+                            <li>Contextos conversacionales</li>
+                            <li>Soporte multicanal</li>
+                        </ul>
+                    </div>
+                    <span class="tag intermediate">Intermedio</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORÍA 3: CHATBOTS CONECTADOS A PLATAFORMAS -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2><span class="category-icon">💬</span> Chatbots Conectados a Plataformas</h2>
+                <p>Librerías para integrar chatbots con aplicaciones de mensajería populares como WhatsApp, Telegram, Discord, etc.</p>
+            </div>
+            <div class="libraries-grid">
+                <div class="library-card platform">
+                    <h3>python-telegram-bot</h3>
+                    <div class="install">pip install python-telegram-bot</div>
+                    <p>Wrapper completo para la API de Telegram Bot. La forma más popular de crear bots en Telegram con Python.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>API completa de Telegram</li>
+                            <li>Manejo de comandos</li>
+                            <li>Callbacks y inline keyboards</li>
+                            <li>Soporte para multimedia</li>
+                        </ul>
+                    </div>
+                    <span class="tag intermediate">Intermedio</span>
+                </div>
+
+                <div class="library-card platform">
+                    <h3>Twilio (WhatsApp API)</h3>
+                    <div class="install">pip install twilio</div>
+                    <p>Cliente oficial de Twilio para enviar y recibir mensajes de WhatsApp mediante su API.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>WhatsApp Business API</li>
+                            <li>SMS y llamadas</li>
+                            <li>Webhooks para mensajes entrantes</li>
+                            <li>Multimedia y plantillas</li>
+                        </ul>
+                    </div>
+                    <span class="tag intermediate">Intermedio</span>
+                </div>
+
+                <div class="library-card platform">
+                    <h3>discord.py</h3>
+                    <div class="install">pip install discord.py</div>
+                    <p>Biblioteca asíncrona para crear bots de Discord con Python. Muy popular en comunidades gaming.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>API completa de Discord</li>
+                            <li>Comandos y eventos</li>
+                            <li>Integración con voz</li>
+                            <li>Embeds y reacciones</li>
+                        </ul>
+                    </div>
+                    <span class="tag intermediate">Intermedio</span>
+                </div>
+
+                <div class="library-card platform">
+                    <h3>Flask / FastAPI</h3>
+                    <div class="install">pip install flask</div>
+                    <p>Frameworks web para crear webhooks y APIs REST que conecten tu chatbot con cualquier plataforma.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Webhooks personalizados</li>
+                            <li>API REST para chatbots</li>
+                            <li>Integración flexible</li>
+                            <li>Despliegue en servidor</li>
+                        </ul>
+                    </div>
+                    <span class="tag intermediate">Intermedio</span>
+                </div>
+
+                <div class="library-card platform">
+                    <h3>Slack SDK</h3>
+                    <div class="install">pip install slack-sdk</div>
+                    <p>SDK oficial de Slack para crear bots y aplicaciones que se integren con espacios de trabajo.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>API completa de Slack</li>
+                            <li>Slash commands</li>
+                            <li>Mensajes interactivos</li>
+                            <li>Eventos en tiempo real</li>
+                        </ul>
+                    </div>
+                    <span class="tag intermediate">Intermedio</span>
+                </div>
+
+                <div class="library-card platform">
+                    <h3>Microsoft Bot Framework</h3>
+                    <div class="install">pip install botbuilder-core</div>
+                    <p>Framework de Microsoft para crear bots que funcionen en múltiples plataformas simultáneamente.</p>
+                    <div class="features">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Multi-plataforma (Teams, Telegram, etc.)</li>
+                            <li>Diálogos estructurados</li>
+                            <li>Integración con Azure</li>
+                            <li>Reconocimiento de voz</li>
+                        </ul>
+                    </div>
+                    <span class="tag advanced">Avanzado</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLA COMPARATIVA -->
+        <div class="comparison-table">
+            <h2>📊 Tabla Comparativa de Librerías</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Librería</th>
+                        <th>Categoría</th>
+                        <th>Dificultad</th>
+                        <th>PNL</th>
+                        <th>IA/ML</th>
+                        <th>Plataformas</th>
+                        <th>Uso Principal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>NLTK</strong></td>
+                        <td>PNL</td>
+                        <td>Principiante</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td>Aprendizaje y experimentación</td>
+                    </tr>
+                    <tr>
+                        <td><strong>spaCy</strong></td>
+                        <td>PNL</td>
+                        <td>Intermedio</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td>Producción industrial</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transformers</strong></td>
+                        <td>IA</td>
+                        <td>Avanzado</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td>Modelos de lenguaje avanzados</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rasa</strong></td>
+                        <td>IA</td>
+                        <td>Avanzado</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td>Asistentes conversacionales completos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>python-telegram-bot</strong></td>
+                        <td>Plataforma</td>
+                        <td>Intermedio</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td>Bots de Telegram</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Twilio</strong></td>
+                        <td>Plataforma</td>
+                        <td>Intermedio</td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td>WhatsApp y SMS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LangChain</strong></td>
+                        <td>IA</td>
+                        <td>Avanzado</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="cross">✗</span></td>
+                        <td>Aplicaciones con LLMs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Microsoft Bot Framework</strong></td>
+                        <td>Plataforma</td>
+                        <td>Avanzado</td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td>Bots empresariales multi-canal</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
