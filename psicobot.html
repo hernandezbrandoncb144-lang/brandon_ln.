@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsicoBot - Chatbot Psicológico con Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #4a90e2;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .description h2 {
+            color: #66a6ff;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.8;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            margin-bottom: 1rem;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+            border-left: 4px solid #e17055;
+        }
+
+        .warning-box h3 {
+            color: #d63031;
+            margin-bottom: 0.8rem;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+        }
+
+        .warning-box p {
+            color: #2d3436;
+            line-height: 1.6;
+        }
+
+        .note {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: #2d3436;
+        }
+
+        .code-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .code-section h2 {
+            color: #4a90e2;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .code-block .comment {
+            color: #75715e;
+        }
+
+        .code-block .string {
+            color: #e6db74;
+        }
+
+        .code-block .keyword {
+            color: #f92672;
+        }
+
+        .code-block .function {
+            color: #a6e22e;
+        }
+
+        .code-block .variable {
+            color: #66d9ef;
+        }
+
+        .placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .placeholder h3 {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .placeholder p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            opacity: 0.9;
+        }
+
+        .glossary {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .glossary h2 {
+            color: #4a90e2;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .glossary-item {
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: white;
+        }
+
+        .glossary-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .glossary-item h3 {
+            color: white;
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glossary-item .syntax {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            color: white;
+        }
+
+        .glossary-item p {
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.6;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: #4a90e2;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .code-block {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al inicio</a>
+
+        <div class="header">
+            <div class="icon">🧠💬</div>
+            <h1>PsicoBot - Chatbot Psicológico</h1>
+        </div>
+
+        <div class="description">
+            <h2>📖 Asistente Virtual de Apoyo Emocional</h2>
+            <p>
+                PsicoBot es un proyecto educativo que simula un chatbot de apoyo psicológico básico. Utiliza técnicas de procesamiento de lenguaje natural para detectar palabras clave relacionadas con emociones y estados mentales, respondiendo de manera empática y proporcionando orientación general.
+            </p>
+            <p>
+                Este tipo de chatbot demuestra cómo la tecnología puede utilizarse para brindar apoyo inicial, aunque nunca debe reemplazar la atención profesional de un psicólogo o terapeuta licenciado.
+            </p>
+            
+            <div class="warning-box">
+                <h3>⚠️ Aviso Importante</h3>
+                <p>
+                    Este chatbot es solo un proyecto educativo y de demostración. <strong>NO reemplaza la atención médica o psicológica profesional.</strong> Si experimentas problemas de salud mental graves, crisis o pensamientos de autolesión, por favor contacta a un profesional de la salud mental o llama a una línea de ayuda de emergencia.
+                </p>
+            </div>
+
+            <div class="note">
+                <strong>📝 Nota del Código:</strong> Para ver el código completo de PsicoBot, por favor proporciona el código fuente que deseas mostrar en esta página. El sistema está preparado para mostrar la implementación completa con sintaxis resaltada y explicaciones detalladas.
+            </div>
+        </div>
+
+        <div class="placeholder">
+            <h3>⏳ Código en Espera</h3>
+            <p>Por favor comparte el código de PsicoBot para mostrarlo aquí con sintaxis coloreada y explicaciones detalladas.</p>
+        </div>
+
+        <div class="glossary">
+            <h2>📚 Conceptos Clave en Chatbots Psicológicos</h2>
+
+            <div class="glossary-item">
+                <h3>Detección de Palabras Clave Emocionales</h3>
+                <div class="syntax">if palabra in ["triste", "deprimido", "solo"]:</div>
+                <p>
+                    Técnica básica de PNL que identifica términos relacionados con estados emocionales en el texto del usuario. El chatbot mantiene listas de palabras asociadas con diferentes emociones (tristeza, ansiedad, felicidad) y responde apropiadamente según lo detectado.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Respuestas Empáticas</h3>
+                <div class="syntax">respuestas_empaticas = ["Entiendo cómo te sientes...", ...]</div>
+                <p>
+                    Conjunto de respuestas pre-escritas diseñadas para validar las emociones del usuario y mostrar comprensión. Las respuestas empáticas son fundamentales en chatbots de apoyo emocional para crear una conexión con el usuario.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Análisis de Sentimiento</h3>
+                <div class="syntax">polaridad = TextBlob(texto).sentiment.polarity</div>
+                <p>
+                    Evaluación automática del tono emocional del mensaje. Un valor negativo indica emociones negativas (tristeza, enojo), mientras que un valor positivo indica emociones positivas (alegría, entusiasmo). Esto permite al bot ajustar su respuesta según la intensidad emocional.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Recursos y Derivación</h3>
+                <div class="syntax">if crisis_detectada: mostrar_lineas_ayuda()</div>
+                <p>
+                    Función crucial que detecta situaciones de crisis (palabras como "suicidio", "hacerme daño") y proporciona inmediatamente recursos profesionales como líneas telefónicas de emergencia, números de crisis y enlaces a servicios de salud mental.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Validación sin Juicio</h3>
+                <div class="syntax">Principio: Aceptar sin juzgar las emociones compartidas</div>
+                <p>
+                    Principio fundamental en psicología que el chatbot debe implementar: nunca minimizar, juzgar o invalidar lo que el usuario comparte. Cada respuesta debe reconocer la validez de las emociones expresadas, incluso si son negativas o intensas.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Limitaciones Éticas</h3>
+                <div class="syntax">Transparencia: "Soy un bot, no un profesional"</div>
+                <p>
+                    El chatbot debe ser transparente sobre sus limitaciones y siempre aclarar que no es un psicólogo real. Debe animar a los usuarios a buscar ayuda profesional para problemas serios y nunca debe dar diagnósticos médicos o prescribir tratamientos.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Técnicas de Normalización</h3>
+                <div class="syntax">Mensaje: "Es normal sentirse así..."</div>
+                <p>
+                    Ayudar al usuario a entender que sus emociones son respuestas humanas normales. La normalización reduce el estigma y la vergüenza, haciendo que la persona se sienta menos aislada en su experiencia emocional.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Preguntas Abiertas</h3>
+                <div class="syntax">"¿Puedes contarme más sobre cómo te sientes?"</div>
+                <p>
+                    Uso de preguntas que invitan a la reflexión y expresión más profunda. Las preguntas abiertas permiten al usuario explorar sus emociones y pensamientos, promoviendo el autoconocimiento y la catarsis emocional.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Sesiones y Contexto</h3>
+                <div class="syntax">historial_conversacion = []</div>
+                <p>
+                    Mantener un registro de la conversación para proporcionar respuestas contextuales. Recordar lo que el usuario ha compartido permite al bot hacer referencias a temas anteriores y mostrar continuidad, creando una experiencia más humana.
+                </p>
+            </div>
+
+            <div class="glossary-item">
+                <h3>Privacidad y Confidencialidad</h3>
+                <div class="syntax">Principio: No almacenar datos personales sensibles</div>
+                <p>
+                    Consideración ética fundamental: proteger la información personal y emocional del usuario. Un chatbot de salud mental debe ser diseñado con privacidad por diseño, evitando almacenar conversaciones sin consentimiento explícito y cifrar cualquier dato almacenado.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
